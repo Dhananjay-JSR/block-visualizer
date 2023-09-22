@@ -96,7 +96,7 @@ export default function Transaction() {
                                 title="Transaction Fee (Satoshis)"
                                 value={data.fee}
                                 showBorder
-                                helperText="The size of the transaction in bytes"
+                                helperText="Gass fee for this transaction in Satoshis"
                             />
 
                             <DataViewBlock

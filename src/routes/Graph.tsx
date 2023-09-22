@@ -63,7 +63,7 @@ export default function GraphExplorer() {
         setTimeout(() => {
             setLoading(false)
             setData(DATARAW)
-        }, 1000)
+        }, 2700)
     }, [])
     // console.log(data.address)
 
