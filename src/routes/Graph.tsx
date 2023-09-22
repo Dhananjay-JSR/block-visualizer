@@ -96,7 +96,7 @@ export default function GraphExplorer() {
             return {
                 type: "selectorNode",
                 id: NewData as string,
-                data: { label: `${NewData}` },
+                data: { label: `${NewData}`,isDestiny:true },
                 position: {
                     x: Math.cos(2 * Math.PI * index / BranchData.length) * 170 + CenterNodeX,
                     y: Math.sin(2 * Math.PI * index / BranchData.length) * 170 + CenterNodeY,
@@ -216,7 +216,9 @@ function CustomNodder({ data, isConnectable, selected,dragging,xPos,yPos }: any)
     
     return (
         <>
-            {data.isSource == true && <Handle
+            {
+            // data.isSource ==
+             true && <Handle
             
                 type="target"
                 position={Position.Top}
@@ -272,6 +274,143 @@ function CustomNodder({ data, isConnectable, selected,dragging,xPos,yPos }: any)
         let OldNodes = reactFlowInstance.getNodes()
         let OldEdges = reactFlowInstance.getEdges()
 
+
+        if (nodeId== "1KqrDhH3jV98vRqXL2F8BGjGbRZqWMJ5c9"){
+
+            // Detach The Node 
+
+            let NewNodes = reactFlowInstance.getNodes().filter((item)=>item.id !== nodeId)
+            let OldEdges = reactFlowInstance.getEdges()
+            let BranchData =  Array.from(new Set(KqrData.txs.map((tx:any,index:number)=>tx.inputs[0].prev_out.addr)))
+            reactFlowInstance.setNodes([...NewNodes,{
+                id: nodeId,
+                position: { x: xPos, y: yPos },
+                type: "selectorNode",
+                data: { label: nodeId, isSource: true,isDestiny:true,RandCol : getRandomHighContrastColor() }
+             },...BranchData.filter((item)=>item !== nodeId).map((NewData, index) => {
+                return {
+                    type: "selectorNode",
+                    id: NewData as string,
+                    data: { label: `${NewData}`,isDestiny:true },
+                    position: {
+                        x: Math.cos(2 * Math.PI * index / BranchData.length) * 170 + xPos,
+                        y: Math.sin(2 * Math.PI * index / BranchData.length) * 170 + yPos,
+                    },
+                }
+            })])
+
+            //  reactFlowInstance.setEdges([...OldEdges,{
+            //     id: `e${nodeId}-TempID`, source:  "TempID", target:nodeId, animated: true
+            //  }])
+
+            reactFlowInstance.setEdges([...OldEdges,...BranchData.filter((item)=>item !== nodeId).map((NewData, index) => {
+                return { id: `e${NewData}-${nodeId}`, source: NewData as unknown as string, target: nodeId, animated: true }
+            })])
+
+
+
+            // let NewNode = reactFlowInstance.getNode(nodeId)?.data?.isSource
+            // let BranchData =  Array.from(new Set(KqrData.txs.map((tx:any,index:number)=>tx.inputs[0].prev_out.addr)))
+            // //    console.log(TesData)
+            //      let MapperData = BranchData.map((NewData, index) => {
+            //          return {
+            //              type: "selectorNode",
+            //              id: NewData as string,
+            //              data: { label: `${NewData}`,isSource: false },
+            //              position: {
+            //                  x: Math.cos(2 * Math.PI * index / BranchData.length) * 170 + xPos,
+            //                  y: Math.sin(2 * Math.PI * index / BranchData.length) * 170 + yPos,
+            //              },
+            //          }
+            //      })
+
+            //      console.log(MapperData)
+            //     //  @ts-ignore
+            //     //  MapperData.concat({ id: nodeId, position: { x: xPos, y: yPos }, type: "selectorNode", data: { label: data.address, isSource: true } })
+            //      reactFlowInstance.setNodes([...OldNodes,...MapperData,{
+            //         id: nodeId,
+            //         position: { x: xPos, y: yPos },
+            //         type: "selectorNode",
+            //         data: { label: nodeId, isSource: true }
+            //      }])
+
+            //      let TempEdge = MapperData.map((NewDataID, index) => {
+            //         return { id: `e${NewDataID.id}-${nodeId}source`, source: NewDataID.id as unknown as string, target: nodeId, animated: true }
+            //     })
+
+            //     console.log
+            //         reactFlowInstance.setEdges([...OldEdges,...TempEdge])
+            //     //  setNodes([...OldNodes,...MapperData])
+            //     //  setEdges([...OldEdges,...MapperData.map((NewDataID, index) => {
+            //         // return { id: `e${NewDataID.id}-source`, source: NewDataID.id as unknown as string, target: 'source', animated: true }
+            //     // })])
+
+        }else if (nodeId=="13mHBgLwVBrZtpQ1JAndCkic4FBMPiuocB"){
+
+
+
+
+            let NewNodes = reactFlowInstance.getNodes().filter((item)=>item.id !== nodeId)
+            let OldEdges = reactFlowInstance.getEdges()
+            let BranchData =  Array.from(new Set(mHBData.txs.map((tx:any,index:number)=>tx.inputs[0].prev_out.addr)))
+            reactFlowInstance.setNodes([...NewNodes,{
+                id: nodeId,
+                position: { x: xPos, y: yPos },
+                type: "selectorNode",
+                data: { label: nodeId, isSource: true,isDestiny:true,RandCol : getRandomHighContrastColor() }
+             },...BranchData.filter((item)=>item !== nodeId).map((NewData, index) => {
+                return {
+                    type: "selectorNode",
+                    id: NewData as string,
+                    data: { label: `${NewData}`,isDestiny:true },
+                    position: {
+                        x: Math.cos(2 * Math.PI * index / BranchData.length) * 170 + xPos,
+                        y: Math.sin(2 * Math.PI * index / BranchData.length) * 170 + yPos,
+                    },
+                }
+            })])
+
+            //  reactFlowInstance.setEdges([...OldEdges,{
+            //     id: `e${nodeId}-TempID`, source:  "TempID", target:nodeId, animated: true
+            //  }])
+
+            reactFlowInstance.setEdges([...OldEdges,...BranchData.filter((item)=>item !== nodeId).map((NewData, index) => {
+                return { id: `e${NewData}-${nodeId}`, source: NewData as unknown as string, target: nodeId, animated: true }
+            })])
+
+        }else if (nodeId=="178bs9PcpiQbvk6t1vJRNBr85pofYYHiL7"){
+
+
+
+            let NewNodes = reactFlowInstance.getNodes().filter((item)=>item.id !== nodeId)
+            let OldEdges = reactFlowInstance.getEdges()
+            let BranchData =  Array.from(new Set(bs9Data.txs.map((tx:any,index:number)=>tx.inputs[0].prev_out.addr)))
+            reactFlowInstance.setNodes([...NewNodes,{
+                id: nodeId,
+                position: { x: xPos, y: yPos },
+                type: "selectorNode",
+                data: { label: nodeId, isSource: true,isDestiny:true,RandCol : getRandomHighContrastColor() }
+             },...BranchData.filter((item)=>item !== nodeId).map((NewData, index) => {
+                return {
+                    type: "selectorNode",
+                    id: NewData as string,
+                    data: { label: `${NewData}`,isDestiny:true },
+                    position: {
+                        x: Math.cos(2 * Math.PI * index / BranchData.length) * 170 + xPos,
+                        y: Math.sin(2 * Math.PI * index / BranchData.length) * 170 + yPos,
+                    },
+                }
+            })])
+
+            //  reactFlowInstance.setEdges([...OldEdges,{
+            //     id: `e${nodeId}-TempID`, source:  "TempID", target:nodeId, animated: true
+            //  }])
+
+            reactFlowInstance.setEdges([...OldEdges,...BranchData.filter((item)=>item !== nodeId).map((NewData, index) => {
+                return { id: `e${NewData}-${nodeId}`, source: NewData as unknown as string, target: nodeId, animated: true }
+            })])
+
+        }
         
     }}>Explore This Node</ContextMenu.Item>
     {/* <ContextMenu.Item shortcut="⌘ D">Duplicate</ContextMenu.Item> */}
@@ -344,7 +483,9 @@ function CustomNodder({ data, isConnectable, selected,dragging,xPos,yPos }: any)
             style={{ top: 10, background: '#555' }}
             isConnectable={isConnectable}
           /> */}
-            {data.isSource == null && <Handle
+            {
+            // data.isDestiny==
+            true && <Handle
                 type="source"
                 position={Position.Bottom}
                 id="b"
@@ -397,3 +538,25 @@ function DownloadButton() {
         </Panel>
     );
 }
+
+
+function getRandomHighContrastColor() {
+    // Generate random values for red, green, and blue components
+    const r = Math.floor(Math.random() * 256);
+    const g = Math.floor(Math.random() * 256);
+    const b = Math.floor(Math.random() * 256);
+  
+    // Calculate the luminance (brightness) of the color
+    // using the formula Y = 0.299*R + 0.587*G + 0.114*B
+    const luminance = 0.299 * r + 0.587 * g + 0.114 * b;
+  
+    // Check if the luminance is above a certain threshold
+    // to ensure high contrast with black or white text
+    const textColor = luminance > 128 ? "#000000" : "#FFFFFF";
+  
+    // Convert the RGB values to a hex string
+    const colorHex = `#${r.toString(16).padStart(2, "0")}${g.toString(16).padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
+  
+    return { background: colorHex, text: textColor };
+  }
+  
