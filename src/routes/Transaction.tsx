@@ -28,7 +28,7 @@ export default function Transaction() {
     if (loading)
         return (
             <>
-                <div className="flex justify-center items-center h-screen bg-[#00d4ff]">
+                <div className="flex justify-center items-center h-screen bg-[#19323C] text-white text-2xl">
                     Loading Data from Server Please Be Patient
                 </div>
             </>
@@ -38,7 +38,7 @@ export default function Transaction() {
         <>
           <div><Toaster/></div>
            
-            <div className="h-screen flex flex-col">
+            <div className="min-h-screen flex flex-col  ">
                 <Header />
                 <div className="w-full grow flex justify-center items-center ">
                     <div className="max-w-5xl h-full w-full">
@@ -289,6 +289,9 @@ export default function Transaction() {
 
                     </div>
                 </div>
+                <div className="h-10 mt-5 w-full text-right pt-2 px-2 text-lg text-white bg-[#19323C]">
+          Team Snowden
+        </div>
             </div>
         </>
     );
@@ -326,7 +329,7 @@ function DataViewBlock({
             className={`flex ${showBorder ? "border-r-2" : ""
                 } border-[#dad3ff] border-b-2 p-3 `}
         >
-            <div className="w-full relative text-[#9358e9] ">
+            <div className="w-full relative text-[#13293D] ">
                 <div
                     onMouseMove={(e) => {
                         setMousePosition({ x: e.clientX, y: e.clientY });
@@ -347,7 +350,7 @@ function DataViewBlock({
                                 top: mousePosition.y,
                                 position: "fixed",
                             }}
-                            className=" m-8 inset-0 text-[#00057f] font-semibold bg-[#dad3ff] p-3 w-fit h-fit rounded-md z-50"
+                            className=" m-8 inset-0 text-[#FECEE9] font-semibold bg-[#011C27] p-3 w-fit h-fit rounded-md z-50"
                         >
                             {helperText}
                         </div>

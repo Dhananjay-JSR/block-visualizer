@@ -274,9 +274,22 @@ function CustomNodder({ data, isConnectable, selected,dragging,xPos,yPos }: any)
         let OldNodes = reactFlowInstance.getNodes()
         let OldEdges = reactFlowInstance.getEdges()
 
+ function DelayExecuter(){
+
+    let tenpToadt = toast.loading("Fetching Address Info From Server ... Please Wait",{
+        
+    })
+
 
         if (nodeId== "1KqrDhH3jV98vRqXL2F8BGjGbRZqWMJ5c9"){
+            setTimeout(()=>{
 
+                toast.success("Data Retrival Suucessful",{
+                    id:tenpToadt
+                })
+
+
+           
             // Detach The Node 
 
             let NewNodes = reactFlowInstance.getNodes().filter((item)=>item.id !== nodeId)
@@ -298,6 +311,8 @@ function CustomNodder({ data, isConnectable, selected,dragging,xPos,yPos }: any)
                     },
                 }
             })])
+
+            
 
             //  reactFlowInstance.setEdges([...OldEdges,{
             //     id: `e${nodeId}-TempID`, source:  "TempID", target:nodeId, animated: true
@@ -344,8 +359,14 @@ function CustomNodder({ data, isConnectable, selected,dragging,xPos,yPos }: any)
             //     //  setEdges([...OldEdges,...MapperData.map((NewDataID, index) => {
             //         // return { id: `e${NewDataID.id}-source`, source: NewDataID.id as unknown as string, target: 'source', animated: true }
             //     // })])
-
+        },2400)
         }else if (nodeId=="13mHBgLwVBrZtpQ1JAndCkic4FBMPiuocB"){
+            setTimeout(()=>{
+
+                toast.success("Data Retrival Suucessful",{
+                    id:tenpToadt
+                })
+           
 
 
 
@@ -378,9 +399,16 @@ function CustomNodder({ data, isConnectable, selected,dragging,xPos,yPos }: any)
                 return { id: `e${NewData}-${nodeId}`, source: NewData as unknown as string, target: nodeId, animated: true }
             })])
 
+        },2400)
+
         }else if (nodeId=="178bs9PcpiQbvk6t1vJRNBr85pofYYHiL7"){
 
+            setTimeout(()=>{
 
+            toast.success("Data Retrival Suucessful",{
+                id:tenpToadt
+            })
+        
 
             let NewNodes = reactFlowInstance.getNodes().filter((item)=>item.id !== nodeId)
             let OldEdges = reactFlowInstance.getEdges()
@@ -410,7 +438,30 @@ function CustomNodder({ data, isConnectable, selected,dragging,xPos,yPos }: any)
                 return { id: `e${NewData}-${nodeId}`, source: NewData as unknown as string, target: nodeId, animated: true }
             })])
 
+        },2400)
+
+        }else {
+           
+
+            setTimeout(()=>{
+                // DelayExecuter()
+                toast.error("No Transaction Data Found on This Node",{
+                    id:tenpToadt
+                })
+                // toast.error("No Transaction Data Found on This Node")
+                // toast.dismiss()
+                // toast.dismiss(tenpToadt)
+            },1300)
         }
+    }
+
+
+
+    DelayExecuter()
+    // setTimeout(()=>{
+        
+
+    // },1300)
         
     }}>Explore This Node</ContextMenu.Item>
     {/* <ContextMenu.Item shortcut="⌘ D">Duplicate</ContextMenu.Item> */}
