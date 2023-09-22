@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import RobotImg from "../assets/robot.png";
+import { Toaster } from "react-hot-toast";
 export function Header() {
   return (
     <nav className="w-full h-10 flex px-3 justify-between items-center bg-[#090979]">
@@ -19,6 +20,7 @@ export default function Main() {
   const [Txaddress, setTxAddress] = useState("");
   return (
     <>
+  
       <div className="h-screen flex flex-col">
         <Header />
         <div className="w-full grow flex justify-center items-center">

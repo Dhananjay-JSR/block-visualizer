@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Header } from "./Main";
 import React from "react";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function Transaction() {
     let { txid } = useParams();
@@ -35,10 +36,8 @@ export default function Transaction() {
 
     return (
         <>
-            {copy &&
-                <div className="fixed bg-[#8eadff] text-lg text-[#000e8b] rounded-md  right-0 top-36   h-12 px-36 z-50">ID Copied</div>
-            }
-            {" "}
+          <div><Toaster/></div>
+           
             <div className="h-screen flex flex-col">
                 <Header />
                 <div className="w-full grow flex justify-center items-center ">
@@ -53,7 +52,8 @@ export default function Transaction() {
                                 <button className="ml-4" onClick={() => {
                                     if (txid && navigator.clipboard) {
 
-                                        setCopy(true)
+                                        toast.success("Transaction ID Copied to your Clipboard")
+
                                         navigator.clipboard.writeText(txid)
                                     }
                                 }}><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-copy" viewBox="0 0 16 16">
