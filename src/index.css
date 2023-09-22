@@ -14,6 +14,8 @@
   -webkit-text-size-adjust: 100%;
 }
 
+
+
 a {
   font-weight: 500;
   color: #646cff;
@@ -67,6 +69,9 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 } */
+
+
+/* 89fae5576211552b4e70f962dddf171bbfbb9d243bb9a59dd90bc1d698f9759d */
 
 
 @tailwind base;

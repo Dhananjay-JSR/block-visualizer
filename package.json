@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "html-to-image": "^1.11.11",
     "localforage": "^1.10.0",
     "match-sorter": "^6.3.1",
     "patch-package": "^8.0.0",
