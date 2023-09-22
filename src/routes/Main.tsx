@@ -25,7 +25,7 @@ export default function Main() {
         <Header />
         <div className="w-full grow flex justify-center items-center">
           <div className="flex flex-col justify-center -mt-20">
-            <img src={RobotImg} className="h-44" />
+            <img src={RobotImg} className="h-56 w-96" />
             <div className="flex gap-1 justify-center items-center">
               <input
               value={Txaddress}
