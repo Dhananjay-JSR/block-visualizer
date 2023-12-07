@@ -14,7 +14,7 @@ export default function LiveCounter({
 
     
   React.useEffect(() => {
-    if (wc.readyState === WebSocket.OPEN) {
+    // if (wc.readyState === WebSocket.OPEN) {
       const MSGPayloader = (msg: MessageEvent) => {
         // console.log(JSON.parse(msg.data))
         const Response: BTCTrans = JSON.parse(msg.data);
@@ -35,7 +35,7 @@ export default function LiveCounter({
       return () => {
         wc.removeEventListener("message", MSGPayloader);
       };
-    }
+    // }
   }, []);
     return <div className="bg-[#121111]  h-full w-1/2 p-1">
     <div className="text-center mb-2 text-lg font-medium text-white font-mono underline">
@@ -46,7 +46,7 @@ export default function LiveCounter({
       <tbody>
         {BTCHolder.map((item) => {
           return (
-            <AnimatePresence>
+            <AnimatePresence key={item.transaction.hash}>
               <motion.tr
                 initial={{
                   translateX: 20,

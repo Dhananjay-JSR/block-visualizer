@@ -1,14 +1,33 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import RobotImg from "../assets/robot.png";
-import React from "react";
+import { useEffect, useState } from "react";
+// import { Link } from "react-router-dom";
+// import RobotImg from "../assets/robot.png";
+// import React from "react";
 import { BTC_ws,ETH_ws } from "../utils/conn";
-import { BTCTrans } from "../utils/Typers";
-import { AnimatePresence, motion } from "framer-motion";
+// import { BTCTrans } from "../utils/Typers";
+// import { AnimatePresence, motion } from "framer-motion";
 import LiveCounter from "../components/LiveCounter";
 import ETHCOunter from "../components/ETHLiveCounter";
+import { SERVER_URL } from "../utils/ServerConst";
 
 export function Header() {
+  const [Response , setResponse] = useState(false)
+  useEffect(()=>{
+    const controller = new AbortController();
+  const signal = controller.signal;
+    (async()=>{
+      const Data = await fetch("http://"+SERVER_URL+"/health",{
+        signal:signal
+      })
+      const Body = await Data.text()
+      if (Body=="OK"){
+        setResponse(true)
+      }
+    })()
+
+    return ()=>{
+      controller.abort()
+    }
+  },[])
   return (
     <nav className="w-full h-14 flex px-3 justify-between items-center bg-[#121111]">
       <div className="font-bold text-[#dcf47c]  px-1 rounded-sm border-0 border-[#dcf47c] scale-y-150 scale-105">
@@ -16,7 +35,7 @@ export function Header() {
         {/* <span className="pl-2 text-lg">the Bitcoin Tracer</span> */}
       </div>
       <div className="text-base text-[#dcf47c]">
-        System Status : <span className="">Operational</span>
+        System Status : {Response?<span className="">Operational</span> : <span className="text-red-500">No Signal</span>}
       </div>
     </nav>
   );
@@ -25,6 +44,7 @@ export function Header() {
 
 
 export default function Main() {
+
   const [Txaddress, setTxAddress] = useState("");
 
 

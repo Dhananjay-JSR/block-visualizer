@@ -1,3 +1,4 @@
+// eslint-disable 
 import React, { useCallback, useContext, useEffect, useMemo } from "react";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
@@ -574,8 +575,8 @@ function DownloadButton() {
             width: imageWidth,
             height: imageHeight,
             style: {
-                width: imageWidth,
-                height: imageHeight,
+                width: imageWidth.toString(),
+                height: imageHeight.toString(),
                 transform: `translate(${transform[0]}px, ${transform[1]}px) scale(${transform[2]})`,
             },
         }).then(downloadImage);

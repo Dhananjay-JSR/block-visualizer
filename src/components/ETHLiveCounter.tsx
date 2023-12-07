@@ -10,17 +10,17 @@ export default function ETHCOunter({
     wc: WebSocket,
     Title:string
 }){
-    const [BTCHolder, setBTCHolder] = useState<EthTrans[]>([]);
+    const [ETHHolder, setETHHolder] = useState<EthTrans[]>([]);
 
-    
   React.useEffect(() => {
-    if (wc.readyState === WebSocket.OPEN) {
+    // if (wc.readyState === WebSocket.OPEN) {
       const MSGPayloader = (msg: MessageEvent) => {
+        // console.log(msg)
         // console.log(JSON.parse(msg.data))
         const Response: EthTrans = JSON.parse(msg.data);
         Response.recivedTime = new Date().toLocaleTimeString();
 
-        setBTCHolder((prev) => {
+        setETHHolder((prev) => {
           // Add the latest message at the beginning of the array
           const newState = [Response, ...prev];
           // Keep only the latest two messages
@@ -35,7 +35,7 @@ export default function ETHCOunter({
       return () => {
         wc.removeEventListener("message", MSGPayloader);
       };
-    }
+    // }
   }, []);
     return <div className="bg-[#121111]  h-full w-1/2 p-1">
     <div className="text-center mb-2 text-lg font-medium text-white font-mono underline">
@@ -44,9 +44,9 @@ export default function ETHCOunter({
 
     <table className="h-3/4 w-full">
       <tbody>
-        {BTCHolder.map((item) => {
+        {ETHHolder.map((item) => {
           return (
-            <AnimatePresence>
+            <AnimatePresence key={item.transaction.hash}>
               <motion.tr
                 initial={{
                   translateX: 20,
