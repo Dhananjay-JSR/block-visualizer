@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@radix-ui/themes": "^2.0.0-rc.3",
+    "framer-motion": "^10.16.14",
     "html-to-image": "^1.11.11",
     "localforage": "^1.10.0",
     "match-sorter": "^6.3.1",
