@@ -43,7 +43,9 @@ export default function LiveCounter({
     </div>
 
     <table className="h-3/4 w-full">
-      <tbody>
+    {BTCHolder.length==0 ? <div className="w-full h-full flex justify-center items-center text-white bg-white/5 animate-pulse  ">
+        <div className="">Waiting for Server Response</div>
+      </div> : <tbody>
         {BTCHolder.map((item) => {
           return (
             <AnimatePresence key={item.transaction.hash}>
@@ -90,7 +92,7 @@ export default function LiveCounter({
             </AnimatePresence>
           );
         })}
-      </tbody>
+      </tbody>}
     </table>
   </div>
 

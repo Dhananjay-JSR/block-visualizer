@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-// import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 // import RobotImg from "../assets/robot.png";
 // import React from "react";
 import { BTC_ws,ETH_ws } from "../utils/conn";
@@ -8,7 +8,6 @@ import { BTC_ws,ETH_ws } from "../utils/conn";
 import LiveCounter from "../components/LiveCounter";
 import ETHCOunter from "../components/ETHLiveCounter";
 import { SERVER_URL } from "../utils/ServerConst";
-
 export function Header() {
   const [Response , setResponse] = useState(false)
   useEffect(()=>{
@@ -72,9 +71,9 @@ export default function Main() {
                   }}
                   className="w-full text-xl p-2 outline-none"
                 />
-                <button className="absolute right-2 w-min bg-[#121111] text-white font-medium hover:text-[#dcf47c] hover:scale-105 active:scale-75 active:ease-in-out transition-all p-1 top-1/2 -translate-y-1/2">
+                <Link to={`/transaction/${Txaddress}`} className="absolute right-2 w-min bg-[#121111] text-white font-medium hover:text-[#dcf47c] hover:scale-105 active:scale-75 active:ease-in-out transition-all p-1 top-1/2 -translate-y-1/2">
                   SEARCH
-                </button>
+                </Link>
               </div>
             </div>
           </div>

@@ -43,7 +43,9 @@ export default function ETHCOunter({
     </div>
 
     <table className="h-3/4 w-full">
-      <tbody>
+      {ETHHolder.length==0 ? <div className="w-full h-full flex justify-center items-center text-white bg-white/5 animate-pulse  ">
+        <div className="">Waiting for Server Response</div>
+      </div> :<tbody>
         {ETHHolder.map((item) => {
           return (
             <AnimatePresence key={item.transaction.hash}>
@@ -89,7 +91,8 @@ export default function ETHCOunter({
             </AnimatePresence>
           );
         })}
-      </tbody>
+      </tbody> }
+      
     </table>
   </div>
 
