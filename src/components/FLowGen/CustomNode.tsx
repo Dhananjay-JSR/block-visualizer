@@ -4,6 +4,25 @@ import { ActionType, ContainerProvider } from "../../ContextProvider";
 import { ContextMenu } from "@radix-ui/themes";
 import toast from "react-hot-toast";
 
+function getRandomHighContrastColor() {
+    // Generate random values for red, green, and blue components
+    const r = Math.floor(Math.random() * 256);
+    const g = Math.floor(Math.random() * 256);
+    const b = Math.floor(Math.random() * 256);
+  
+    // Calculate the luminance (brightness) of the color
+    // using the formula Y = 0.299*R + 0.587*G + 0.114*B
+    const luminance = 0.299 * r + 0.587 * g + 0.114 * b;
+  
+    // Check if the luminance is above a certain threshold
+    // to ensure high contrast with black or white text
+    const textColor = luminance > 128 ? "#000000" : "#FFFFFF";
+  
+    // Convert the RGB values to a hex string
+    const colorHex = `#${r.toString(16).padStart(2, "0")}${g.toString(16).padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
+  
+    return { background: colorHex, text: textColor };
+  }
 export default function CustomNodder({ data, isConnectable, selected,dragging,xPos,yPos }: any) {
     
     const nodeId = useNodeId();
@@ -48,17 +67,20 @@ export default function CustomNodder({ data, isConnectable, selected,dragging,xP
 
                 </div>
                 <button style={{
+                    marginTop: "20px",
                     opacity: isWhiteList? 0.5 : 1,
 
                 }} onClick={()=>{
                     toast.success("Address Copied to Clipboard")
                     navigator.clipboard.writeText(data.label)
-                }} className={`absolute top-full  ${selected&&!dragging ? "bg-white border-2 py-0.5 px-1 rounded-md" :  "cursor-default max-w-[52px] truncate"}`}>
+                }} className={`absolute top-full  ${selected&&!dragging ? "bg-white border-2 py-0.5 px-1 rounded-md" :  "cursor-default max-w-[52px] truncate text-yellow-200"}`}>
+{/* <div className="bg-white"> */}
 
                     {/* saddsadsasdadsadsjkhdsahkjjhkdsajhkdsajhkdsa */}
-                    <span className={`${!selected? "text-base text-white" : "text-xs "}`}>{
+                    <span className={`${!selected? "text-base " : "text-xs "}`}>{
                         data.label}</span>
-
+                        {/* </div> */}
+                  
                 </button>
             </div>
 
@@ -126,9 +148,6 @@ export default function CustomNodder({ data, isConnectable, selected,dragging,xP
             reactFlowInstance.setEdges([...OldEdges,...BranchData.filter((item)=>item !== nodeId).map((NewData, index) => {
                 return { id: `e${NewData}-${nodeId}`, source: NewData as unknown as string, target: nodeId, animated: true }
             })])
-
-
-
             // let NewNode = reactFlowInstance.getNode(nodeId)?.data?.isSource
             // let BranchData =  Array.from(new Set(KqrData.txs.map((tx:any,index:number)=>tx.inputs[0].prev_out.addr)))
             // //    console.log(TesData)
@@ -167,7 +186,6 @@ export default function CustomNodder({ data, isConnectable, selected,dragging,xP
         },2400)
         }else if (nodeId=="13mHBgLwVBrZtpQ1JAndCkic4FBMPiuocB"){
             setTimeout(()=>{
-
                 toast.success("Data Retrival Suucessful",{
                     id:tenpToadt
                 })

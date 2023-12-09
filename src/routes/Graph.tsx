@@ -7,7 +7,7 @@ import DATARAW from '../assets/bc1qfqqed76qxqm2epmxlv7ywgjz8k6tk472pj7msn.json';
 import KqrData from '../assets/1KqrDhH3jV98vRqXL2F8BGjGbRZqWMJ5c9.json'
 import mHBData from '../assets/13mHBgLwVBrZtpQ1JAndCkic4FBMPiuocB.json'
 import bs9Data from '../assets/178bs9PcpiQbvk6t1vJRNBr85pofYYHiL7.json'
-import ReactFlow, { useNodesState, useEdgesState, addEdge, Edge, Node, Controls, MiniMap, Background, Connection, Handle, Position, Panel, useReactFlow, getRectOfNodes, getTransformForBounds, useNodeId } from 'reactflow';
+import ReactFlow, {MarkerType, useNodesState, useEdgesState, addEdge, Edge, Node, Controls, MiniMap, Background, Connection, Handle, Position, Panel, useReactFlow, getRectOfNodes, getTransformForBounds, useNodeId } from 'reactflow';
 
 import 'reactflow/dist/style.css';
 import { toPng } from "html-to-image";
@@ -23,6 +23,7 @@ import { SERVER_IP } from "../utils/ServerConst";
 // const initialEdges = [{ id: 'e1-2', source: '1', target: '2' }];
 export default function GraphExplorer() {
     // Context Data Gets the Data of All Available Node
+    const { addr } = useParams();
     const ContextData  = useContext(ContainerProvider)
 
 // Elements Gets Data from All Element
@@ -39,15 +40,15 @@ export default function GraphExplorer() {
     const [data, setData] = useState<any>(null)
 
     React.useEffect(() => {
-        fetch(`${SERVER_IP}/address?parameters=${txid}`).then((res)=>res.json()).then((data)=>{
-            console.log(data)
+        fetch(`${SERVER_IP}/address?parameters=${addr}`).then((res)=>res.json()).then((data)=>{
+            // console.log(data)
             setData(data)
             setLoading(false)
         })
 
         // setTimeout(() => {
         //     setLoading(false)
-        //     setData(DATARAW)
+            // setData(DATARAW)
         // }, 2700)
     }, [])
     // console.log(data.address)
@@ -57,9 +58,11 @@ export default function GraphExplorer() {
     );
     const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
 
-    const initialEdges: Edge[] = [...Elements.map((_, index) => {
-        return { id: `e${index + 1}-source`, source: `${index + 1}`, target: 'source', animated: true }
-    })]
+    // const initialEdges: Edge[] = [...Elements.map((_, index) => {
+    //     return { id: `e${index + 1}-source`, source: `${index + 1}`, target: 'source', animated: true }
+    // })]
+
+    const initialEdges: Edge[] = []
 
 
     // );
@@ -74,36 +77,52 @@ export default function GraphExplorer() {
         //     }})
         //     console.log(NewData)
         if (data == null) return
-
-       let BranchData =  Array.from(new Set(data.txs.map((tx:any,index:number)=>tx.inputs[0].prev_out.addr)))
-    //    console.log(TesData)
-        let MapperData = BranchData.map((NewData, index) => {
-            return {
-                type: "selectorNode",
-                id: NewData as string,
-                data: { label: `${NewData}`,isDestiny:true },
+// DOC: Mapper Data Maps Data to a Custom Data Format for Visualizer
+    let MapperData = data.map((Tx,index)=>{
+        return {
+                            type: "selectorNode",
+                id: Tx.id as string,
+                data: { label: `${Tx.id}`,isDestiny:true ,IncomingTx:Tx.IncomingTx},
                 position: {
-                    x: Math.cos(2 * Math.PI * index / BranchData.length) * 170 + CenterNodeX,
-                    y: Math.sin(2 * Math.PI * index / BranchData.length) * 170 + CenterNodeY,
-                },
+                    x: Math.cos(2 * Math.PI * index / data.length) * 170 + CenterNodeX,
+                    y: Math.sin(2 * Math.PI * index / data.length) * 170 + CenterNodeY,
+                }
+        }
+    })
+    // console.log(MapperData)
+        setNodes([...MapperData, { id: 'source', position: { x: CenterNodeX, y: CenterNodeY }, type: "selectorNode", data: { label: addr, isSource: true } }])
+        setEdges([...MapperData.map((DataID,index:number)=>{
+          
+            if (DataID.data.IncomingTx==true){
+                
+                return {
+                    id: `esource-${DataID.id}-${index}`, source:  'source' as unknown as string, target:  DataID.id as unknown as string , animated:true,markerStart: {
+                        type: MarkerType.Arrow,
+                      },
+                }
+            }else{
+                return { id: `e${DataID.id}-source-${index}`, source: DataID.id as unknown as string, target: 'source' , animated:true ,markerStart: {
+                    type: MarkerType.Arrow,
+                  },
             }
-        })
-        setNodes([...MapperData, { id: 'source', position: { x: CenterNodeX, y: CenterNodeY }, type: "selectorNode", data: { label: data.address, isSource: true } }])
-        setEdges([...MapperData.map((NewDataID, index) => {
-            return { id: `e${NewDataID.id}-source`, source: NewDataID.id as unknown as string, target: 'source', animated: true }
+            }
         })])
+        
+        // setEdges([...MapperData.map((NewDataID, index) => {
+        //     return { id: `e${NewDataID.id}-source`, source: NewDataID.id as unknown as string, target: 'source', animated: true }
+        // })])
 
     }, [data])
 
 
-    useEffect(()=>{
-        // console.log(ContextData?.state)
-        setNodes((node)=>node.filter((item)=>!ContextData?.state.deletedNode.includes(item.id)))
-        setEdges((edge)=>edge.filter((item)=>{
-            return !ContextData?.state.detachedNode.includes(item.source as string) && !ContextData?.state.deletedNode.includes(item.target as string)
-        }))
+    // useEffect(()=>{
+    //     // console.log(ContextData?.state)
+    //     setNodes((node)=>node.filter((item)=>!ContextData?.state.deletedNode.includes(item.id)))
+    //     setEdges((edge)=>edge.filter((item)=>{
+    //         return !ContextData?.state.detachedNode.includes(item.source as string) && !ContextData?.state.deletedNode.includes(item.target as string)
+    //     }))
 
-    },[ContextData?.state.deletedNode,ContextData?.state.detachedNode])
+    // },[ContextData?.state.deletedNode,ContextData?.state.detachedNode])
 
     // useEffect(()=>{
 
@@ -142,10 +161,10 @@ export default function GraphExplorer() {
         animated: true
     } as any   , eds)), [setEdges]);
 
-    const { addr } = useParams<{ addr: string }>()
+    // const { addr } = useParams<{ addr: string }>()
     const [loading, setLoading] = useState(true)
 
-    if (true)
+    if (loading)
         return (
             <>
                 <div className="flex justify-center items-center h-screen bg-[#181716] text-white text-lg">
@@ -245,23 +264,4 @@ function DownloadButton() {
 }
 
 
-function getRandomHighContrastColor() {
-    // Generate random values for red, green, and blue components
-    const r = Math.floor(Math.random() * 256);
-    const g = Math.floor(Math.random() * 256);
-    const b = Math.floor(Math.random() * 256);
-  
-    // Calculate the luminance (brightness) of the color
-    // using the formula Y = 0.299*R + 0.587*G + 0.114*B
-    const luminance = 0.299 * r + 0.587 * g + 0.114 * b;
-  
-    // Check if the luminance is above a certain threshold
-    // to ensure high contrast with black or white text
-    const textColor = luminance > 128 ? "#000000" : "#FFFFFF";
-  
-    // Convert the RGB values to a hex string
-    const colorHex = `#${r.toString(16).padStart(2, "0")}${g.toString(16).padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
-  
-    return { background: colorHex, text: textColor };
-  }
   
