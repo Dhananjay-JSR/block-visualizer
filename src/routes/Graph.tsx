@@ -3,17 +3,13 @@ import React, { useCallback, useContext, useEffect, useMemo } from "react";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { Header } from "./Main";
-import DATARAW from '../assets/bc1qfqqed76qxqm2epmxlv7ywgjz8k6tk472pj7msn.json';
-import KqrData from '../assets/1KqrDhH3jV98vRqXL2F8BGjGbRZqWMJ5c9.json'
-import mHBData from '../assets/13mHBgLwVBrZtpQ1JAndCkic4FBMPiuocB.json'
-import bs9Data from '../assets/178bs9PcpiQbvk6t1vJRNBr85pofYYHiL7.json'
 import ReactFlow, {MarkerType, useNodesState, useEdgesState, addEdge, Edge, Node, Controls, MiniMap, Background, Connection, Handle, Position, Panel, useReactFlow, getRectOfNodes, getTransformForBounds, useNodeId } from 'reactflow';
 
 import 'reactflow/dist/style.css';
 import { toPng } from "html-to-image";
-import toast, { ToastBar, Toaster } from "react-hot-toast";
-import { ContextMenu } from "@radix-ui/themes";
-import { ActionType, ContainerProvider } from "../ContextProvider";
+import {  Toaster } from "react-hot-toast";
+// import { ContextMenu } from "@radix-ui/themes";
+import {  ContainerProvider } from "../ContextProvider";
 import CustomNodder from "../components/FLowGen/CustomNode";
 import { SERVER_IP } from "../utils/ServerConst";
 // const initialNodes = [
@@ -90,7 +86,7 @@ export default function GraphExplorer() {
         }
     })
     // console.log(MapperData)
-        setNodes([...MapperData, { id: 'source', position: { x: CenterNodeX, y: CenterNodeY }, type: "selectorNode", data: { label: addr, isSource: true } }])
+        setNodes([...MapperData, { id: 'source', position: { x: CenterNodeX, y: CenterNodeY }, type: "selectorNode", data: { label: addr, isSource: true ,PropogationCompleted:true } }])
         setEdges([...MapperData.map((DataID,index:number)=>{
           
             if (DataID.data.IncomingTx==true){
@@ -115,14 +111,13 @@ export default function GraphExplorer() {
     }, [data])
 
 
-    // useEffect(()=>{
-    //     // console.log(ContextData?.state)
-    //     setNodes((node)=>node.filter((item)=>!ContextData?.state.deletedNode.includes(item.id)))
-    //     setEdges((edge)=>edge.filter((item)=>{
-    //         return !ContextData?.state.detachedNode.includes(item.source as string) && !ContextData?.state.deletedNode.includes(item.target as string)
-    //     }))
-
-    // },[ContextData?.state.deletedNode,ContextData?.state.detachedNode])
+    useEffect(()=>{
+        // Context handles for Detacting And Delecting Node
+        setNodes((node)=>node.filter((item)=>!ContextData?.state.deletedNode.includes(item.id)))
+        setEdges((edge)=>edge.filter((item)=>{
+            return !ContextData?.state.detachedNode.includes(item.source as string) && !ContextData?.state.deletedNode.includes(item.target as string)
+        }))
+    },[ContextData?.state.deletedNode,ContextData?.state.detachedNode])
 
     // useEffect(()=>{
 

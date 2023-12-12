@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { BTCTrans } from "../utils/Typers";
 import { useState } from "react";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function LiveCounter({
     wc,
@@ -11,6 +12,7 @@ export default function LiveCounter({
     Title:string
 }){
     const [BTCHolder, setBTCHolder] = useState<BTCTrans[]>([]);
+    const navigate = useNavigate();
 
     
   React.useEffect(() => {
@@ -50,6 +52,10 @@ export default function LiveCounter({
           return (
             <AnimatePresence key={item.transaction.hash}>
               <motion.tr
+              onClick={()=>{
+             
+                navigate(`/transaction/${item.transaction.hash}`)
+              }}
                 initial={{
                   translateX: 20,
                 }}
