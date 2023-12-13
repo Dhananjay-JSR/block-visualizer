@@ -37,15 +37,15 @@ export default function ETHCOunter({
       };
     // }
   }, []);
-    return <div className="bg-[#121111]  h-full w-1/2 p-1">
-    <div className="text-center mb-2 text-lg font-medium text-white font-mono underline">
-      Latest {Title} Transaction
+    return <div className="bg-white  h-52 w-1/2 p-1 px-2.5">
+    <div className="mb-2 text-base  font-semibold text-black font-mono">
+       {Title} Transaction
     </div>
 
-    <table className="h-3/4 w-full">
+    <table className="h-3/4 w-full mt-4">
       {ETHHolder.length==0 ? <div className="w-full h-full flex justify-center items-center text-white bg-white/5 animate-pulse  ">
         <div className="">Waiting for Server Response</div>
-      </div> :<tbody>
+      </div> :<tbody className="w-full">
         {ETHHolder.map((item) => {
           return (
             <AnimatePresence key={item.transaction.hash}>
@@ -55,7 +55,7 @@ export default function ETHCOunter({
                 }}
                 animate={{ translateX: 0 }}
                 // exit={{opacity:0 }}
-                className="hover:text-white text-gray-400 hover:cursor-pointer hover:bg-gray-300/20 "
+                className="hover:text-black text-gray-400 hover:cursor-pointer hover:bg-gray-300/20 "
                 key={item.transaction.hash}
               >
                 <td>
@@ -71,22 +71,22 @@ export default function ETHCOunter({
                 </td>
                 <td>{item.recivedTime}</td>
 
-                <td>
+                <td className="text-ellipsis overflow-hidden">
                   {/* {item.transaction.out.reduce((curr, acc) => {
                     return curr + acc.value;
                   }, 0) / 1000000000}{" "} */}
                   {(parseFloat(item.transaction.value)/1000000000).toFixed(2)}
                   ETH
                 </td>
-                <td>
+                {/* <td className="text-ellipsis overflow-hidden ">
                   {" "}
                   RS{" "}
                   {(
                     (parseFloat(item.transaction.value) /
-                      1000000000) *
+                      1000000) *
                       1_86_269
                   ).toFixed(2)}
-                </td>
+                </td> */}
               </motion.tr>
             </AnimatePresence>
           );
