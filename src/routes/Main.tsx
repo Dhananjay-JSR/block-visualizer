@@ -138,7 +138,7 @@ export function Header() {
         <Link to={"/"} className="text-gray-600 hover:underline">
           Transactions
         </Link>
-        <Link to={"/"} className="text-gray-600 hover:underline">
+        <Link to={"/AboutUS"} className="text-gray-600 hover:underline">
           About US
         </Link>
         <div>
@@ -254,7 +254,7 @@ export default function Main() {
 
                   
                  
-                  // navigate("/transaction/"+inputField)
+                  navigate("/transaction/"+inputField)
                 }else{
                   alert("No Empty FIelds")
                 }
@@ -265,13 +265,44 @@ export default function Main() {
               type="text"
               className="w-96 text-sm px-2 py-1 outline-none rounded-md border  focus:border-black"
             />
-            <button className="ml-2 " onClick={()=>{
-              if (inputField!=""){
+            <button className="ml-2 " onClick={async()=>{
+             if (inputField!=""){
+              const toastId = toast.loading('Loading...');
+              try{
 
-                // navigate("/transaction/"+inputField)
+             
+            
+              const ReqData = await axios.get(SERVER_IP+"/search?parameters="+inputField)
+              if (ReqData.data.error==true){
+                toast.error("Could Not Find it in Out Block Network",{
+                  id: toastId
+                })
               }else{
-                alert("No Empty FIelds")
+                toast.success("Result Found",{
+                  id:toastId
+                })
+                if (ReqData.data.type=="transaction"){
+                  navigate("/transaction/"+inputField)
+                }
+                if (ReqData.data.type=="address"){
+                  navigate("/graph/"+inputField)
+                }
               }
+            }
+            catch (err){
+              const Err  = err as AxiosError 
+              const ResponData = Err.response.data as Record<string,string>
+              toast.error(ResponData.message,{
+                id:toastId
+              })
+            }
+
+              
+             
+              navigate("/transaction/"+inputField)
+            }else{
+              alert("No Empty FIelds")
+            }
             }}>
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-search fill-white hover:fill-black/25" viewBox="0 0 16 16">
   <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>

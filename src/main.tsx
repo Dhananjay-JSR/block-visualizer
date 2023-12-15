@@ -14,6 +14,7 @@ import GraphExplorer from './routes/Graph.tsx';
 import { ReactFlowProvider } from 'reactflow';
 import { Theme, ThemePanel } from '@radix-ui/themes';
 import { ContainerContext, ContainerProvider } from './ContextProvider.tsx';
+import AboutUSPage from './routes/AboutUS.tsx';
 
 const router = createBrowserRouter([
   {
@@ -26,6 +27,9 @@ const router = createBrowserRouter([
   },{
     path: "/graph/:addr",
     element: <GraphExplorer/>,
+  },{
+    path:"AboutUS",
+    element: <AboutUSPage/>
   }
 ]);
 

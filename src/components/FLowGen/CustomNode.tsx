@@ -1,10 +1,17 @@
 import { useContext, useState } from "react";
-import { Handle, MarkerType, Position, useNodeId, useReactFlow } from "reactflow";
+import {
+  Handle,
+  MarkerType,
+  Position,
+  useNodeId,
+  useReactFlow,
+} from "reactflow";
 import { ActionType, ContainerProvider } from "../../ContextProvider";
 import { ContextMenu } from "@radix-ui/themes";
 import toast from "react-hot-toast";
-import axios from 'axios'
+import axios from "axios";
 import { SERVER_IP } from "../../utils/ServerConst";
+import { useNavigate } from "react-router-dom";
 function getRandomHighContrastColor() {
   // Generate random values for red, green, and blue components
   const r = Math.floor(Math.random() * 256);
@@ -34,6 +41,7 @@ export default function CustomNodder({
   xPos,
   yPos,
 }: any) {
+  const navigate = useNavigate();
   const nodeId = useNodeId();
   const reactFlowInstance = useReactFlow();
 
@@ -118,11 +126,10 @@ export default function CustomNodder({
                 opacity: isWhiteList ? 0.5 : 1,
               }}
               onClick={() => {
-                if (data.IncomingTx!=undefined){
-
+                if (data.IncomingTx != undefined) {
                   toast.success("Transaction ID Copied to Clipboard");
                   navigator.clipboard.writeText(data.label);
-                }else{
+                } else {
                   toast.success("Address Copied to Clipboard");
                   navigator.clipboard.writeText(data.label);
                 }
@@ -148,199 +155,200 @@ export default function CustomNodder({
             <>
               {" "}
               <ContextMenu.Item
-                onClick={async() => {
-                  const toasterloaderID = toast.loading("Loading Data From Backend")
-                    if (data.IncomingTx!=undefined){
-                        const OldNodes = reactFlowInstance.getNodes();
-                        const OldEdges = reactFlowInstance.getEdges();
-                        // this is an Tx , get All pariticipting Address
-                    const Data =   (await axios(`${SERVER_IP}/transaction/addr?parameters=${nodeId}`)).data
+                onClick={async () => {
+                  const toasterloaderID = toast.loading(
+                    "Loading Data From Backend"
+                  );
+                  if (data.IncomingTx != undefined) {
+                    const OldNodes = reactFlowInstance.getNodes();
+                    const OldEdges = reactFlowInstance.getEdges();
+                    // this is an Tx , get All pariticipting Address
+                    const Data = (
+                      await axios(
+                        `${SERVER_IP}/transaction/addr?parameters=${nodeId}`
+                      )
+                    ).data;
                     // console.log(Data)
-                    const CurrNode = OldNodes
-                    .filter((item) => item.id == nodeId)[0]
-                    const NewNodes = OldNodes
-                    .filter((item) => item.id !== nodeId);
+                    const CurrNode = OldNodes.filter(
+                      (item) => item.id == nodeId
+                    )[0];
+                    const NewNodes = OldNodes.filter(
+                      (item) => item.id !== nodeId
+                    );
 
                     reactFlowInstance.setNodes([
-                        ...NewNodes,
-                        {
-                          id: nodeId,
-                          position: { x: xPos, y: yPos },
-                          type: "selectorNode",
-                          data: {
-                            ...CurrNode.data
-                            
-                            // isSource: true,
-                            // isDestiny: true,
-                            // RandCol: getRandomHighContrastColor(),
-                          },
+                      ...NewNodes,
+                      {
+                        id: nodeId,
+                        position: { x: xPos, y: yPos },
+                        type: "selectorNode",
+                        data: {
+                          ...CurrNode.data,
+
+                          // isSource: true,
+                          // isDestiny: true,
+                          // RandCol: getRandomHighContrastColor(),
                         },
+                      },
 
-                        ...Data.map((NewAddress, index)=>{
-                            return    {
-                                      type: "selectorNode",
-                                      id: NewAddress.address as string,
-                                      data: { label: `${NewAddress.address}`, isDestiny: true },
-                                      position: {
-                                        x:
-                                          Math.cos(
-                                            (2 * Math.PI * index) / Data.length
-                                          ) *
-                                            170 +
-                                          xPos,
-                                        y:
-                                          Math.sin(
-                                            (2 * Math.PI * index) / Data.length
-                                          ) *
-                                            170 +
-                                          yPos,
-                                      },
-                                    };
-                                  
-                        })
+                      ...Data.map((NewAddress, index) => {
+                        return {
+                          type: "selectorNode",
+                          id: NewAddress.address as string,
+                          data: {
+                            label: `${NewAddress.address}`,
+                            isDestiny: true,
+                          },
+                          position: {
+                            x:
+                              Math.cos((2 * Math.PI * index) / Data.length) *
+                                170 +
+                              xPos,
+                            y:
+                              Math.sin((2 * Math.PI * index) / Data.length) *
+                                170 +
+                              yPos,
+                          },
+                        };
+                      }),
 
-                        // ...Data.data.filter((item) => item !== nodeId).map(
-                        //   (NewData, index) => {
-                        //     return {
-                        //       type: "selectorNode",
-                        //       id: NewData as string,
-                        //       data: { label: `${NewData}`, isDestiny: true },
-                        //       position: {
-                        //         x:
-                        //           Math.cos(
-                        //             (2 * Math.PI * index) / Data.length
-                        //           ) *
-                        //             170 +
-                        //           xPos,
-                        //         y:
-                        //           Math.sin(
-                        //             (2 * Math.PI * index) / Data.length
-                        //           ) *
-                        //             170 +
-                        //           yPos,
-                        //       },
-                        //     };
-                        //   }
-                        // ),
-                      ]);
+                      // ...Data.data.filter((item) => item !== nodeId).map(
+                      //   (NewData, index) => {
+                      //     return {
+                      //       type: "selectorNode",
+                      //       id: NewData as string,
+                      //       data: { label: `${NewData}`, isDestiny: true },
+                      //       position: {
+                      //         x:
+                      //           Math.cos(
+                      //             (2 * Math.PI * index) / Data.length
+                      //           ) *
+                      //             170 +
+                      //           xPos,
+                      //         y:
+                      //           Math.sin(
+                      //             (2 * Math.PI * index) / Data.length
+                      //           ) *
+                      //             170 +
+                      //           yPos,
+                      //       },
+                      //     };
+                      //   }
+                      // ),
+                    ]);
 
-                       reactFlowInstance.setEdges([...OldEdges,
-                        ...Data.map((NewAddress)=>{
-                            if (NewAddress.inputAddress){
+                    reactFlowInstance.setEdges([
+                      ...OldEdges,
+                      ...Data.map((NewAddress) => {
+                        if (NewAddress.inputAddress) {
+                          return {
+                            id: `e${NewAddress.address}-${nodeId}`,
+                            source: NewAddress.address as unknown as string,
+                            target: nodeId,
+                            animated: true,
+                            markerStart: {
+                              type: MarkerType.Arrow,
+                            },
+                          };
+                        } else {
+                          return {
+                            id: `e${NewAddress.address}-${nodeId}`,
+                            source: NewAddress.address as unknown as string,
+                            target: nodeId,
+                            animated: true,
+                            markerEnd: {
+                              type: MarkerType.Arrow,
+                            },
+                          };
+                        }
+                      }),
+                    ]);
+                  } else {
+                    // Address
+                    // toast.success("Clicking on Address")
 
-                                return {
-                                    id: `e${NewAddress.address}-${nodeId}`,
-                                    source: NewAddress.address as unknown as string,
-                                    target: nodeId,
-                                    animated: true,
-                                    markerStart: {
-                                        type: MarkerType.Arrow,
-                                    },
-                                };
-                            }else{
-                                return {
-                                    id: `e${NewAddress.address}-${nodeId}`,
-                                    source: NewAddress.address as unknown as string,
-                                    target: nodeId,
-                                    animated: true,
-                                    markerEnd: {
-                                        type: MarkerType.Arrow,
-                                    },
-                                };
-                            }
-                                  
-                        })
-                    ])
-                    }else{
-                        // Address
-                        // toast.success("Clicking on Address")
-      
-
-
-
-                        const OldNodes = reactFlowInstance.getNodes();
-                        const OldEdges = reactFlowInstance.getEdges();
-                        // this is an Address , get All pariticipting TX
-                        const Data =  (await axios(`${SERVER_IP}/address/tx?parameters=${nodeId}`)).data
+                    const OldNodes = reactFlowInstance.getNodes();
+                    const OldEdges = reactFlowInstance.getEdges();
+                    // this is an Address , get All pariticipting TX
+                    const Data = (
+                      await axios(
+                        `${SERVER_IP}/address/tx?parameters=${nodeId}`
+                      )
+                    ).data;
                     // console.log(Data)
-                    const CurrNode = OldNodes
-                    .filter((item) => item.id == nodeId)[0]
-                    const NewNodes = OldNodes
-                    .filter((item) => item.id !== nodeId);
+                    const CurrNode = OldNodes.filter(
+                      (item) => item.id == nodeId
+                    )[0];
+                    const NewNodes = OldNodes.filter(
+                      (item) => item.id !== nodeId
+                    );
 
                     reactFlowInstance.setNodes([
-                        ...NewNodes,
-                        {
-                          id: nodeId,
-                          position: { x: xPos, y: yPos },
-                          type: "selectorNode",
-                          data: {
-                            ...CurrNode.data
-                          },
+                      ...NewNodes,
+                      {
+                        id: nodeId,
+                        position: { x: xPos, y: yPos },
+                        type: "selectorNode",
+                        data: {
+                          ...CurrNode.data,
                         },
+                      },
 
-                        ...Data.map((NewAddress, index)=>{
-                            return    {
-                                      type: "selectorNode",
-                                      id: NewAddress.id as string,
-                                      data: { label: `${NewAddress.id}`, isDestiny: true ,IncomingTx:NewAddress.IncomingTx},
-                                      position: {
-                                        x:
-                                          Math.cos(
-                                            (2 * Math.PI * index) / Data.length
-                                          ) *
-                                            170 +
-                                          xPos,
-                                        y:
-                                          Math.sin(
-                                            (2 * Math.PI * index) / Data.length
-                                          ) *
-                                            170 +
-                                          yPos,
-                                      },
-                                    };
-                                  
-                        })
-                      ]);
+                      ...Data.map((NewAddress, index) => {
+                        return {
+                          type: "selectorNode",
+                          id: NewAddress.id as string,
+                          data: {
+                            label: `${NewAddress.id}`,
+                            isDestiny: true,
+                            IncomingTx: NewAddress.IncomingTx,
+                          },
+                          position: {
+                            x:
+                              Math.cos((2 * Math.PI * index) / Data.length) *
+                                170 +
+                              xPos,
+                            y:
+                              Math.sin((2 * Math.PI * index) / Data.length) *
+                                170 +
+                              yPos,
+                          },
+                        };
+                      }),
+                    ]);
 
-                       reactFlowInstance.setEdges([...OldEdges,
-                        ...Data.map((NewAddress)=>{
-                            if (NewAddress.IncomingTx){
-                                return {
-                                    id: `e${NewAddress.id}-${nodeId}`,
-                                    source: NewAddress.id as unknown as string,
-                                    target: nodeId,
-                                    animated: true,
-                                    markerStart: {
-                                        type: MarkerType.Arrow,
-                                    },
-                                };
-                            }else{
-                                return {
-                                    id: `e${NewAddress.id}-${nodeId}`,
-                                    source: NewAddress.id as unknown as string,
-                                    target: nodeId,
-                                    animated: true,
-                                    markerEnd: {
-                                        type: MarkerType.Arrow,
-                                    },
-                                };
-                            }
-                                  
-                        })
-                    ])
+                    reactFlowInstance.setEdges([
+                      ...OldEdges,
+                      ...Data.map((NewAddress) => {
+                        if (NewAddress.IncomingTx) {
+                          return {
+                            id: `e${NewAddress.id}-${nodeId}`,
+                            source: NewAddress.id as unknown as string,
+                            target: nodeId,
+                            animated: true,
+                            markerStart: {
+                              type: MarkerType.Arrow,
+                            },
+                          };
+                        } else {
+                          return {
+                            id: `e${NewAddress.id}-${nodeId}`,
+                            source: NewAddress.id as unknown as string,
+                            target: nodeId,
+                            animated: true,
+                            markerEnd: {
+                              type: MarkerType.Arrow,
+                            },
+                          };
+                        }
+                      }),
+                    ]);
+                  }
+                  toast.success("Node Connection Suucesful", {
+                    id: toasterloaderID,
+                  });
 
-
-
-
-
-                    }
-                    toast.success("Node Connection Suucesful",{
-                      id:toasterloaderID
-                    })
-
-
-                    /*
+                  /*
                   // ContextData?.dispatch({
                   //     type: ActionType.ADD_EXTENDERNODE,
                   //     payload: {
@@ -641,10 +649,19 @@ export default function CustomNodder({
                 }}
               >
                 {data.IncomingTx != undefined
-                  ? "View Parti. Address"
+                  ? "View Addresses"
                   : "View All Tx "}
                 {/* Explore This Node */}
               </ContextMenu.Item>
+              {data.IncomingTx != undefined && (
+                <ContextMenu.Item
+                  onClick={() => {
+                    navigate(`/transaction/` + data.label);
+                  }}
+                >
+                  Get More Insight
+                </ContextMenu.Item>
+              )}
               <ContextMenu.Separator />
             </>
           )}
