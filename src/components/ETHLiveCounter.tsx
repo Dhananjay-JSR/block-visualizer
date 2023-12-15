@@ -43,7 +43,7 @@ export default function ETHCOunter({
     </div>
 
     <table className="h-3/4 w-full mt-4">
-      {ETHHolder.length==0 ? <div className="w-full h-full flex justify-center items-center text-white bg-white/5 animate-pulse  ">
+      {ETHHolder.length==0 ? <div className="w-full h-full flex justify-center items-center text-black bg-white/5 animate-pulse  ">
         <div className="">Waiting for Server Response</div>
       </div> :<tbody className="w-full">
         {ETHHolder.map((item) => {

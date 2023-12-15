@@ -36,7 +36,7 @@ export default function GraphExplorer() {
     const [data, setData] = useState<any>(null)
 
     React.useEffect(() => {
-        fetch(`${SERVER_IP}/address?parameters=${addr}`).then((res)=>res.json()).then((data)=>{
+        fetch(`${SERVER_IP}/address/tx?parameters=${addr}`).then((res)=>res.json()).then((data)=>{
             // console.log(data)
             setData(data)
             setLoading(false)
@@ -177,7 +177,7 @@ export default function GraphExplorer() {
 
             <ReactFlow
             style={{
-                backgroundColor: "#181716"
+                backgroundColor: "white"
             }}
                 nodes={nodes}
                 edges={edges}
@@ -187,14 +187,14 @@ export default function GraphExplorer() {
                 onEdgesChange={onEdgesChange}
             onConnect={onConnect}
             >
-                 <Background color="#323332" variant="dots" />
+                 <Background color="" variant="dots" />
 
                 {/* <Panel position="top-right">top-left</Panel> */}
                 <DownloadButton />
             </ReactFlow>
             <Controls />
             <MiniMap style={{
-                backgroundColor:"#323332"
+                backgroundColor:"gray"
             }} 
             nodeBorderRadius={100}
 
@@ -251,7 +251,7 @@ function DownloadButton() {
 
     return (
         <Panel position="top-right">
-            <button className="font-semibold border-2 bg-black text-white  p-2 rounded-md hover:bg-gray-800 transition-all hover:transition-all" onClick={onClick}>
+            <button className="font-normal border-2 bg-black text-white  p-2 rounded-md hover:bg-gray-800 transition-all hover:transition-all" onClick={onClick}>
                 Save Graph Locally
             </button>
         </Panel>

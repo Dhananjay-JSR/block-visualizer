@@ -118,13 +118,19 @@ export default function CustomNodder({
                 opacity: isWhiteList ? 0.5 : 1,
               }}
               onClick={() => {
-                toast.success("Address Copied to Clipboard");
-                navigator.clipboard.writeText(data.label);
+                if (data.IncomingTx!=undefined){
+
+                  toast.success("Transaction ID Copied to Clipboard");
+                  navigator.clipboard.writeText(data.label);
+                }else{
+                  toast.success("Address Copied to Clipboard");
+                  navigator.clipboard.writeText(data.label);
+                }
               }}
               className={`absolute top-full  ${
                 selected && !dragging
                   ? "bg-white border-2 py-0.5 px-1 rounded-md"
-                  : "cursor-default max-w-[52px] truncate text-yellow-200"
+                  : "cursor-default max-w-[52px] truncate text-blue-600"
               }`}
             >
               {/* <div className="bg-white"> */}
@@ -143,10 +149,11 @@ export default function CustomNodder({
               {" "}
               <ContextMenu.Item
                 onClick={async() => {
+                  const toasterloaderID = toast.loading("Loading Data From Backend")
                     if (data.IncomingTx!=undefined){
                         const OldNodes = reactFlowInstance.getNodes();
                         const OldEdges = reactFlowInstance.getEdges();
-                        // this is an Address , get All pariticipting Address
+                        // this is an Tx , get All pariticipting Address
                     const Data =   (await axios(`${SERVER_IP}/transaction/addr?parameters=${nodeId}`)).data
                     // console.log(Data)
                     const CurrNode = OldNodes
@@ -328,6 +335,9 @@ export default function CustomNodder({
 
 
                     }
+                    toast.success("Node Connection Suucesful",{
+                      id:toasterloaderID
+                    })
 
 
                     /*

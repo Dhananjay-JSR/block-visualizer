@@ -21,7 +21,7 @@ export function DataViewBlock({
           showBorder ? "border-r-2" : ""
         } border-[#dad3ff] border-b-2 p-3 `}
       >
-        <div className="w-full relative text-yellow-200 ">
+        <div className="w-full relative text-black ">
           <div
             onMouseMove={(e) => {
               setMousePosition({ x: e.clientX, y: e.clientY });
@@ -42,14 +42,14 @@ export function DataViewBlock({
                   top: mousePosition.y,
                   position: "fixed",
                 }}
-                className=" m-8 inset-0 text-black font-semibold bg-white p-3 w-fit h-fit rounded-md z-50"
+                className=" m-8 inset-0 text-black font-medium bg-white  border-2 p-3 w-fit h-fit rounded-md z-50"
               >
                 {helperText}
               </div>
             )}
           </div>
         </div>
-        <div className="w-full text-white truncate">{value}</div>
+        <div className="w-full text-blue-600 truncate">{value}</div>
       </div>
     );
   }

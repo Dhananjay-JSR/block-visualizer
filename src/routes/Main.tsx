@@ -1,13 +1,16 @@
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { MutableRefObject, useEffect, useRef, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 // import RobotImg from "../assets/robot.png";
 // import React from "react";
 import { BTC_ws, ETH_ws } from "../utils/conn";
 // import { BTCTrans } from "../utils/Typers";
 // import { AnimatePresence, motion } from "framer-motion";
 import LiveCounter from "../components/LiveCounter";
+import ReactDOM from "react-dom";
 import ETHCOunter from "../components/ETHLiveCounter";
-import { SERVER_URL } from "../utils/ServerConst";
+import { SERVER_IP, SERVER_URL } from "../utils/ServerConst";
+import axios, { AxiosError } from "axios";
+import toast, { Toaster } from "react-hot-toast";
 
 function BlogLogo() {
   return (
@@ -21,8 +24,8 @@ function BlogLogo() {
     >
       <defs>
         <linearGradient id="btc-c" x1="50%" x2="50%" y1="0%" y2="100%">
-          <stop offset="0%" stop-color="#FFF" stop-opacity=".5" />
-          <stop offset="100%" stop-opacity=".5" />
+          <stop offset="0%" stopColor="#FFF" stopOpacity=".5" />
+          <stop offset="100%" stopOpacity=".5" />
         </linearGradient>
         {/* <circle id="btc-b" cx="16" cy="15" r="15" /> */}
         <filter
@@ -74,7 +77,7 @@ function BlogLogo() {
           />
         </filter>
       </defs>
-      <g fill="none" fill-rule="evenodd">
+      <g fill="none" fillRule="evenodd">
         <use fill="#000" filter="url(#btc-a)" xlinkHref="#btc-b" />
         <use fill="#F7931A" xlinkHref="#btc-b" />
         <use
@@ -85,13 +88,13 @@ function BlogLogo() {
           // style="mix-blend-mode:soft-light"
           xlinkHref="#btc-b"
         />
-        <circle cx="16" cy="15" r="14.5" stroke="#000" stroke-opacity=".097" />
-        <g fill-rule="nonzero " className="">
+        <circle cx="16" cy="15" r="14.5" stroke="#000" strokeOpacity=".097" />
+        <g fillRule="nonzero " className="">
           <use fill="#000" filter="url(#btc-d)" xlinkHref="#btc-e" />
           <use
             fill="#FFF"
             className="fill-blue-600"
-            fill-rule="evenodd"
+            fillRule="evenodd"
             xlinkHref="#btc-e"
           />
         </g>
@@ -155,11 +158,128 @@ export function Header() {
   );
 }
 
+function ModalViewer({
+  children,
+  setIsOpened,
+}: {
+  setIsOpened: React.Dispatch<React.SetStateAction<boolean>>;
+  children: React.ReactNode;
+}) {
+  const MODAL = document.getElementById("modal");
+  useEffect(() => {
+    setIsOpened(true);
+  }, []);
+  return ReactDOM.createPortal(
+    <>
+      <div className="fixed animate-modal-open   bg-transparent h-screen w-full top-0 left-0 "></div>
+      <div className="fixed top-0 left-0 z-10 w-full h-screen">{children}</div>
+    </>,
+    MODAL
+  );
+}
+
 export default function Main() {
-  const [Txaddress, setTxAddress] = useState("");
+  const [inputField,SetInputField] = useState("")
+  const [setshowModal, setSetshowModal] = useState(false);
+  const [isOpened, setIsOpened] = useState(false);
+  const navigate = useNavigate();
+  const NodeRef = useRef<HTMLInputElement>();
+  useEffect(() => {
+    function CLickEvet(mouse: MouseEvent) {
+      console.log("Called");
+      if (isOpened) {
+        if (
+          NodeRef.current &&
+          mouse.target instanceof HTMLElement &&
+          !NodeRef.current.contains(mouse.target)
+        ) {
+          setSetshowModal(false);
+          setIsOpened(false);
+        }
+      }
+    }
+
+    document.addEventListener("click", CLickEvet);
+
+    return () => {
+      document.removeEventListener("click", CLickEvet);
+    };
+  }, [isOpened]);
 
   return (
     <>
+      {setshowModal && (
+        <ModalViewer setIsOpened={setIsOpened}>
+            <div>
+        <Toaster />
+      </div>
+          <div className="mt-20 mx-auto w-fit">
+            <input
+            onChange={(e)=>{
+              const Value = e.currentTarget.value
+              SetInputField(Value)
+            }}
+            onKeyDown={async(e)=>{
+              if (e.key=="Enter"){
+                if (inputField!=""){
+                  const toastId = toast.loading('Loading...');
+                  try{
+
+                 
+                
+                  const ReqData = await axios.get(SERVER_IP+"/search?parameters="+inputField)
+                  if (ReqData.data.error==true){
+                    toast.error("Could Not Find it in Out Block Network",{
+                      id: toastId
+                    })
+                  }else{
+                    toast.success("Result Found",{
+                      id:toastId
+                    })
+                    if (ReqData.data.type=="transaction"){
+                      navigate("/transaction/"+inputField)
+                    }
+                    if (ReqData.data.type=="address"){
+                      navigate("/graph/"+inputField)
+                    }
+                  }
+                }
+                catch (err){
+                  const Err  = err as AxiosError 
+                  const ResponData = Err.response.data as Record<string,string>
+                  toast.error(ResponData.message,{
+                    id:toastId
+                  })
+                }
+
+                  
+                 
+                  // navigate("/transaction/"+inputField)
+                }else{
+                  alert("No Empty FIelds")
+                }
+              }
+            }}
+              ref={NodeRef}
+              placeholder="Enter Etherium or Bitcoin Transaction Hash"
+              type="text"
+              className="w-96 text-sm px-2 py-1 outline-none rounded-md border  focus:border-black"
+            />
+            <button className="ml-2 " onClick={()=>{
+              if (inputField!=""){
+
+                // navigate("/transaction/"+inputField)
+              }else{
+                alert("No Empty FIelds")
+              }
+            }}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-search fill-white hover:fill-black/25" viewBox="0 0 16 16">
+  <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+</svg>
+            </button>
+          </div>
+        </ModalViewer>
+      )}
       <div className="min-h-screen bg-white flex flex-col overflow-hidden">
         <Header />
         <main className="text-center  pt-24 pb-10 bg-white">
@@ -170,7 +290,12 @@ export default function Main() {
             Discover and explore the world of blockchain and cryptocurrencies.
             Real-time data, transactions, and insights at your fingertips.
           </div>
-          <button className="bg-blue-500 mt-3 font-mono hover:bg-blue-400 transition-all text-white text-xs px-2 py-1.5 rounded-sm">
+          <button
+            onClick={() => {
+              setSetshowModal((prev) => true);
+            }}
+            className="bg-blue-500 mt-3 font-mono hover:bg-blue-400 transition-all text-white text-xs px-2 py-1.5 rounded-sm"
+          >
             Explore Now
           </button>
         </main>
@@ -199,12 +324,8 @@ export default function Main() {
           </div>
         </section>
         <section className="text-xs text-gray-500 space-y-2 pt-1 text-center">
-          <h3>
-         Created By Team Snowden
-          </h3>
-          <h6>
-            SIH 2023
-          </h6>
+          <h3>Created By Team Snowden</h3>
+          <h6>SIH 2023</h6>
         </section>
       </div>
     </>
