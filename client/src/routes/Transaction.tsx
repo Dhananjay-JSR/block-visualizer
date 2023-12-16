@@ -26,7 +26,7 @@ export default function Transaction() {
   React.useEffect(() => {
     (async () => {
       try {
-        const ToaterID = toast.loading("Conneting to Backend");
+        const ToaterID = toast.loading("Connection to BlockChain RPC");
         const SearchQuerry = await axios.get(
           SERVER_IP + "/search?parameters=" + txid
         );

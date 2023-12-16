@@ -187,6 +187,7 @@ export default function GraphExplorer() {
                 onEdgesChange={onEdgesChange}
             onConnect={onConnect}
             >
+                {/* @ts-ignore */}
                  <Background color="" variant="dots" />
 
                 {/* <Panel position="top-right">top-left</Panel> */}

@@ -1,45 +1,26 @@
 {
   "name": "blocky",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/Dhananjay-JSR/block-vaisliaezer.git",
+  "author": "Dhananjay-JSR <ajaysenday@gmail.com>",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview",
-    "postinstall": "patch-package"
+    "dev:client": "yarn workspace client dev",
+    "dev:server": "yarn workspace server dev",
+    "dev": "concurrently \"yarn dev:client\" \"yarn dev:server\"",
+    "build:client" : "yarn workspace client build",
+    "build:server" : "yarn workspace server generate  && yarn workspace server migrate",
+    "preserve" : "yarn build:client && yarn build:server",
+    "serve": "yarn workspace server start"
   },
+  "license": "MIT",
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "private": true,
   "dependencies": {
-    "@radix-ui/themes": "^2.0.0-rc.3",
-    "axios": "^1.6.2",
-    "framer-motion": "^10.16.14",
-    "html-to-image": "^1.11.11",
-    "localforage": "^1.10.0",
-    "match-sorter": "^6.3.1",
-    "patch-package": "^8.0.0",
-    "postinstall-postinstall": "^2.1.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-export-table-to-excel": "^1.0.6",
-    "react-hot-toast": "^2.4.1",
-    "react-router-dom": "^6.16.0",
-    "reactflow": "^11.8.3",
-    "sort-by": "^1.2.0"
-  },
-  "devDependencies": {
-    "@types/react": "^18.2.15",
-    "@types/react-dom": "^18.2.7",
-    "@typescript-eslint/eslint-plugin": "^6.0.0",
-    "@typescript-eslint/parser": "^6.0.0",
-    "@vitejs/plugin-react": "^4.0.3",
-    "autoprefixer": "^10.4.15",
-    "eslint": "^8.45.0",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "eslint-plugin-react-refresh": "^0.4.3",
-    "postcss": "^8.4.30",
-    "tailwindcss": "^3.3.3",
-    "typescript": "^5.0.2",
-    "vite": "^4.4.5"
+    "concurrently": "^8.2.2",
+    "rimraf": "^5.0.5"
   }
 }

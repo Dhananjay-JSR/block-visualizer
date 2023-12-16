@@ -8,7 +8,7 @@ import { BTC_ws, ETH_ws } from "../utils/conn";
 import LiveCounter from "../components/LiveCounter";
 import ReactDOM from "react-dom";
 import ETHCOunter from "../components/ETHLiveCounter";
-import { SERVER_IP, SERVER_URL } from "../utils/ServerConst";
+import { SERVER_IP } from "../utils/ServerConst";
 import axios, { AxiosError } from "axios";
 import toast, { Toaster } from "react-hot-toast";
 
@@ -89,7 +89,7 @@ function BlogLogo() {
           xlinkHref="#btc-b"
         />
         <circle cx="16" cy="15" r="14.5" stroke="#000" strokeOpacity=".097" />
-        <g fillRule="nonzero " className="">
+        <g fillRule="nonzero" className="">
           <use fill="#000" filter="url(#btc-d)" xlinkHref="#btc-e" />
           <use
             fill="#FFF"
@@ -108,7 +108,7 @@ export function Header() {
     const controller = new AbortController();
     const signal = controller.signal;
     (async () => {
-      const Data = await fetch("http://" + SERVER_URL + "/health", {
+      const Data = await fetch(SERVER_IP + "/health", {
         signal: signal,
       });
       const Body = await Data.text();

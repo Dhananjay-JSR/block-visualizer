@@ -1,0 +1,27 @@
+{
+  "version": "5",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1702062900744,
+      "tag": "0000_huge_shadowcat",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1702075620614,
+      "tag": "0001_tired_husk",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1702502622951,
+      "tag": "0002_wild_marvel_apes",
+      "breakpoints": true
+    }
+  ]
+}

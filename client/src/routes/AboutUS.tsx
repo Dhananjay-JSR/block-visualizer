@@ -18,7 +18,7 @@ export default function AboutUSPage() {
             Lorem ipsum, dolor sit amet consectetur adipisicing elit. Alias distinctio ipsa dolores. Aliquam earum totam fugit veritatis unde, recusandae illum excepturi, accusantium autem enim sed pariatur maxime, sapiente mollitia at.
           </div>
           <div className="max-w-xl mt-7 mx-auto  text-2xl font-semibold  tracking-tight leading-tight">
-            Meet Our Amazing Team <span className="text-blue-600 ">Snowden</span>
+            Meet Our  <span className="text-blue-600 ">Amazing Team</span>
           </div>
           <div className="mt-3 flex gap-3 flex-wrap">
             <div className="text-center w-fit">
@@ -47,7 +47,7 @@ export default function AboutUSPage() {
 <div className="text-center w-fit">
 
 <img src="https://reunionhq.in//static/5584db9d7875728670f117ad5a5f22ca/80b13/blank-profile-picture.png" className="w-40 h-40 rounded-md" />
-<div className="font-medium">Tejeswar </div>
+<div className="font-medium">Tejeshwar </div>
 </div>
 <div className="text-center w-fit">
 
@@ -55,7 +55,11 @@ export default function AboutUSPage() {
 <div className="font-medium">Dhananjay Senday</div>
 </div>
 
+
           </div>
+          <div className="mt-6">
+
+</div>
         </div>
       </div>
     </>
