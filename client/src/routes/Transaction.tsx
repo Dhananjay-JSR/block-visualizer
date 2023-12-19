@@ -24,12 +24,15 @@ export default function Transaction() {
   }, [copy]);
   // if (loading)
   React.useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+    
     (async () => {
       try {
         const ToaterID = toast.loading("Connection to BlockChain RPC");
         const SearchQuerry = await axios.get(
           SERVER_IP + "/search?parameters=" + txid
-        );
+      );
         if (SearchQuerry.data.chain == "BTC") {
           setCoinType(() => "BTC");
         } else if (SearchQuerry.data.chain == "ETH") {
@@ -40,12 +43,16 @@ export default function Transaction() {
           const DataRequest = await axios.get(
             SERVER_IP + "/transaction?parameters=" + txid
           );
-          setData(() => DataRequest.data);
           toast.success("Data Fetched Success", {
             id: ToaterID,
           });
+          setData(() => DataRequest.data);
+         
           setLoading(false);
         } else {
+          toast.success("Data Fetched Success", {
+            id: ToaterID,
+          });
           navigate("/graph/" + txid);
         }
       } catch (e) {
