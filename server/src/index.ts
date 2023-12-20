@@ -20,24 +20,33 @@ import { db } from "../db/db";
 import {
   Address,
   AddressType,
+  ReportsQuerries,
   SearchHistory,
   TransactionQueries,
   TransactionType,
 } from "../db/schema";
-import { eq } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import axios, { AxiosError } from "axios";
 import process from "process";
 import path from "path";
+// import Reports from "../data.json"
+import bodyParser from "body-parser";
+import { Stream } from "stream";
 const appBase = express();
 const wsInstance = expressWs(appBase);
 
 let { app } = wsInstance;
+
+
 
 app.use(
   cors({
     origin: "*",
   })
 );
+
+app.use(bodyParser.json());
+
 
 function safeToString(x:any) {
   switch (typeof x) {
@@ -147,7 +156,7 @@ app.get("/address/tx", async (req, res) => {
           return;
         }
       }
-
+      
       let TxList = TransactionsList?.data.map((tx: any) => tx.txid);
       let TxMetaData = await GetAddressMetaData(TxList);
       const MashedData = TxMetaData.data.map((txMeta: any) => {
@@ -192,13 +201,12 @@ app.get("/address/tx", async (req, res) => {
       .from(Address)
       .where(eq(Address.address, AddressID));
 
-    if (result.length==0) {
+    if (result.length == 0) {
       // console.log("DHANAAYA")
       let Data = await GetETHTrasactions(AddressID);
       // console.log("ComignReq",AddressID)
-  
+      console.log(Data.data)
       let NewData = Data.data.accountTransactions.map((data: any) => {
-        console.log("FROM  "+data.from,"TO" +AddressID)
         // if (parseInt(data.from,16)==parseInt(AddressID,16)){
         //   console.log("They are Equal")
         // }else{
@@ -206,6 +214,7 @@ app.get("/address/tx", async (req, res) => {
         // }
         return {
           id: data.hash,
+          value : data.value/100000000,
           IncomingTx: parseInt(data.from,16)!=parseInt(AddressID,16),
         };
       });
@@ -359,20 +368,38 @@ app.get("/transaction/addr", async (req, res) => {
       .select()
       .from(TransactionQueries)
       .where(eq(TransactionQueries.transaction_id, TransactionID));
+      let isIncomingALreadyAvaialble = req.query.incoming as string;
 
-    if (result.length == 0) {
+    if (true) {
       
       let Data = await GETEthParticipationgAdd(TransactionID);
-      let TransmittedData = [
-        {
+      let TransmittedData 
+
+      if (isIncomingALreadyAvaialble=="true"){
+        console.log("THis shold execute")
+
+        TransmittedData = [{
+          address: Data.data.from,
+          inputAddress: false,
+        }]
+
+      }else{
+        TransmittedData = [{
           address: Data.data.to,
           inputAddress: true,
-        },
-        // {
-        //   address: Data.data.from,
-        //   inputAddress: false,
-        // },
-      ];
+        }]
+      }
+      
+      // [
+      //   {
+      //     address: Data.data.to,
+      //     inputAddress: true,
+      //   },
+      //   {
+      //     address: Data.data.from,
+      //     inputAddress: false,
+      //   },
+      // ];
 
       let InstertResponse = await db.insert(TransactionQueries).values({
         transaction_id: TransactionID,
@@ -623,6 +650,27 @@ app.get("/search", async (req, res) => {
   }
 });
 
+const LiveReportsStream = new Stream()
+
+
+
+
+
+
+app.ws("/liveReports",(ws,res)=>{
+  const Handler = () => {
+    ws.send(JSON.stringify({
+      newEntry:true
+    }));
+  };
+  LiveReportsStream.on("data", Handler);
+
+  LiveReportsStream.on("close", () => {
+    LiveReportsStream.removeListener("data", Handler);
+  });
+
+})
+
 app.ws("/btc", (ws, req) => {
   const Handler = (data: any) => {
     ws.send(JSON.stringify(data));
@@ -648,6 +696,46 @@ app.ws("/eth", (ws, req) => {
 app.get("/health", (req, res) => {
   res.send("OK");
 });
+
+app.get("/report/latest",async(req,res)=>{
+  let result = await db.select().from(ReportsQuerries).orderBy(desc(ReportsQuerries.id)).limit(3)
+  res.status(200).json(result)
+})
+
+app.get("/report",async(req,res)=>{
+  let id = req.query.id as string;
+  if (id){
+    let result = await db.select().from(ReportsQuerries).where(eq(ReportsQuerries.WAddress,id))
+    return res.status(200).json(result.splice(0,1))
+  }
+})
+
+app.post("/report",async(req,res)=>{
+  let ReportBody = req.body;
+  let InstertResponse = await db.insert(ReportsQuerries).values({
+    WAddress: ReportBody.address,
+    DateAdded: ReportBody.dateAdded,
+    ScamType: ReportBody.typeOfScam,
+    Country : ReportBody.country,
+    Description: ReportBody.description,
+    Source: ReportBody.source,
+    SiteUrl: ReportBody.siteURL,
+  
+  }).execute()
+  
+  if (InstertResponse.changes == 0) {
+    res.status(500).send("Internal Server Error");
+    return;
+  }
+  else if (InstertResponse.changes == 1) {
+    LiveReportsStream.emit("data")
+    res.status(201).send("Report Added");
+    return;
+  }
+
+  
+})
+
 
 app.get("*",(req,res)=>{
   res.sendFile(path.join(process.cwd(),"..","client","dist","index.html"))

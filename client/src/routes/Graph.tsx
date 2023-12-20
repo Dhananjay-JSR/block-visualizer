@@ -7,11 +7,12 @@ import ReactFlow, {MarkerType, useNodesState, useEdgesState, addEdge, Edge, Node
 
 import 'reactflow/dist/style.css';
 import { toPng } from "html-to-image";
-import {  Toaster } from "react-hot-toast";
+import toast, {  Toaster } from "react-hot-toast";
 // import { ContextMenu } from "@radix-ui/themes";
 import {  ContainerProvider } from "../ContextProvider";
 import CustomNodder from "../components/FLowGen/CustomNode";
 import { SERVER_IP } from "../utils/ServerConst";
+import { NewReports_ws } from "../utils/conn";
 // const initialNodes = [
 //     { id: '1', position: { x: 0, y: 0 }, data: { label: '1' } },
 //     { id: '2', position: { x: 0, y: 100 }, data: { label: '2' } },
@@ -19,8 +20,12 @@ import { SERVER_IP } from "../utils/ServerConst";
 // const initialEdges = [{ id: 'e1-2', source: '1', target: '2' }];
 export default function GraphExplorer() {
     // Context Data Gets the Data of All Available Node
-    const { addr } = useParams();
+    let { addr } = useParams();
+    addr = addr.toLowerCase();
     const ContextData  = useContext(ContainerProvider)
+
+
+    
 
 // Elements Gets Data from All Element
     const Elements = Array(5).fill(0).map((_, i) => ({
@@ -78,7 +83,7 @@ export default function GraphExplorer() {
         return {
                             type: "selectorNode",
                 id: Tx.id as string,
-                data: { label: `${Tx.id}`,isDestiny:true ,IncomingTx:Tx.IncomingTx},
+                data: { label: `${Tx.id}`,isDestiny:true ,IncomingTx:Tx.IncomingTx,value:Tx.value},
                 position: {
                     x: Math.cos(2 * Math.PI * index / data.length) * 170 + CenterNodeX,
                     y: Math.sin(2 * Math.PI * index / data.length) * 170 + CenterNodeY,
@@ -93,12 +98,29 @@ export default function GraphExplorer() {
                 
                 return {
                     id: `esource-${DataID.id}-${index}`, source:  'source' as unknown as string, target:  DataID.id as unknown as string , animated:true,markerStart: {
-                        type: MarkerType.Arrow,
+                        type: MarkerType.ArrowClosed,
+                        width: 15,
+                        height: 15,
+                        color: "gray",
+                      },
+                      label: `${((parseInt(DataID.data.value))/100000000).toFixed(2)} ETH` ,
+                      style: {
+                        
+                        strokeWidth: 2,
+                        // stroke: '#FF0072',
                       },
                 }
             }else{
                 return { id: `e${DataID.id}-source-${index}`, source: DataID.id as unknown as string, target: 'source' , animated:true ,markerStart: {
-                    type: MarkerType.Arrow,
+                    type: MarkerType.ArrowClosed,
+                    width: 15,
+                    height: 15,
+                    color: "gray",
+                  },
+                  label: (DataID.data.value)/100000000,
+                  style: {
+                    strokeWidth: 2,
+                    // stroke: '#FF0072',
                   },
             }
             }
@@ -118,6 +140,33 @@ export default function GraphExplorer() {
             return !ContextData?.state.detachedNode.includes(item.source as string) && !ContextData?.state.deletedNode.includes(item.target as string)
         }))
     },[ContextData?.state.deletedNode,ContextData?.state.detachedNode])
+
+   
+  React.useEffect(() => {
+    // if (wc.readyState === WebSocket.OPEN) {
+      const MSGPayloader = () => {
+        toast.success("New Account Report Recived")
+        // console.log(JSON.parse(msg.data))
+        // const Response: BTCTrans = JSON.parse(msg.data);
+        // Response.recivedTime = new Date().toLocaleTimeString();
+
+        // setBTCHolder((prev) => {
+        //   // Add the latest message at the beginning of the array
+        //   const newState = [Response, ...prev];
+        //   // Keep only the latest two messages
+        //   if (newState.length > 5) {
+        //     return newState.slice(0, 5);
+        //   }
+
+        //   return newState;
+
+      };
+      NewReports_ws.addEventListener("message", MSGPayloader);
+      return () => {
+        NewReports_ws.removeEventListener("message", MSGPayloader);
+      };
+    // }
+  }, []);
 
     // useEffect(()=>{
 
@@ -158,6 +207,7 @@ export default function GraphExplorer() {
 
     // const { addr } = useParams<{ addr: string }>()
     const [loading, setLoading] = useState(true)
+useEffect
 
     if (loading)
         return (

@@ -165,7 +165,7 @@ export default function CustomNodder({
                     // this is an Tx , get All pariticipting Address
                     const Data = (
                       await axios(
-                        `${SERVER_IP}/transaction/addr?parameters=${nodeId}`
+                        `${SERVER_IP}/transaction/addr?parameters=${nodeId}&incoming=${data.IncomingTx}`
                       )
                     ).data;
                     // console.log(Data)
@@ -175,6 +175,7 @@ export default function CustomNodder({
                     const NewNodes = OldNodes.filter(
                       (item) => item.id !== nodeId
                     );
+                    // console.log(CurrNode)
 
                     reactFlowInstance.setNodes([
                       ...NewNodes,
@@ -191,6 +192,7 @@ export default function CustomNodder({
                         },
                       },
 
+                        
                       ...Data.map((NewAddress, index) => {
                         return {
                           type: "selectorNode",
@@ -246,8 +248,15 @@ export default function CustomNodder({
                             source: NewAddress.address as unknown as string,
                             target: nodeId,
                             animated: true,
+                            style: {
+                              strokeWidth: 2,
+                              // stroke: '#FF0072',
+                            },
                             markerStart: {
-                              type: MarkerType.Arrow,
+                              type: MarkerType.ArrowClosed,
+                              width: 15,
+                    height: 15,
+                    color: "gray",
                             },
                           };
                         } else {
@@ -256,8 +265,15 @@ export default function CustomNodder({
                             source: NewAddress.address as unknown as string,
                             target: nodeId,
                             animated: true,
+                            style: {
+                              strokeWidth: 2,
+                              // stroke: '#FF0072',
+                            },
                             markerEnd: {
-                              type: MarkerType.Arrow,
+                              type: MarkerType.ArrowClosed,
+                              width: 15,
+                              height: 15,
+                              color: "gray",
                             },
                           };
                         }
@@ -302,6 +318,7 @@ export default function CustomNodder({
                             label: `${NewAddress.id}`,
                             isDestiny: true,
                             IncomingTx: NewAddress.IncomingTx,
+                            value: `${((parseInt(NewAddress.value))/100000000).toFixed(2)} ETH`,
                           },
                           position: {
                             x:
@@ -326,8 +343,16 @@ export default function CustomNodder({
                             source: NewAddress.id as unknown as string,
                             target: nodeId,
                             animated: true,
+                            label : `${((parseInt(NewAddress.value))/100000000).toFixed(2)} ETH`,
+                            style: {
+                              strokeWidth: 2,
+                              // stroke: '#FF0072',
+                            },
                             markerStart: {
-                              type: MarkerType.Arrow,
+                              type: MarkerType.ArrowClosed,
+                              width: 15,
+                              height: 15,
+                              color: "gray",
                             },
                           };
                         } else {
@@ -336,8 +361,16 @@ export default function CustomNodder({
                             source: NewAddress.id as unknown as string,
                             target: nodeId,
                             animated: true,
+                            label : `${((parseInt(NewAddress.value))/100000000).toFixed(2)} ETH`,
+                            style: {
+                              strokeWidth: 2,
+                              // stroke: '#FF0072',
+                            },
                             markerEnd: {
-                              type: MarkerType.Arrow,
+                              type: MarkerType.ArrowClosed,
+                              width: 15,
+                              height: 15,
+                              color: "gray",
                             },
                           };
                         }
@@ -761,7 +794,7 @@ export default function CustomNodder({
             type="source"
             position={Position.Bottom}
             id="b"
-            style={{ background: "#555" }}
+            style={{ background: "#555", }}
             isConnectable={isDetached ? true : false}
           />
         )

@@ -15,6 +15,7 @@ import { ReactFlowProvider } from 'reactflow';
 import { Theme, ThemePanel } from '@radix-ui/themes';
 import { ContainerContext, ContainerProvider } from './ContextProvider.tsx';
 import AboutUSPage from './routes/AboutUS.tsx';
+import ReportsPage from './routes/ReportsPage.tsx';
 
 const router = createBrowserRouter([
   {
@@ -30,6 +31,9 @@ const router = createBrowserRouter([
   },{
     path:"AboutUS",
     element: <AboutUSPage/>
+  },{
+    path: "/reports",
+    element: <ReportsPage/>
   }
 ]);
 

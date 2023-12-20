@@ -76,7 +76,7 @@ def Extractor(pageNumber:int):
             "class": "col-md-10 my-1"
         })
         tempStore = dict()
-        tempStore['WAddress'] = WAddress
+        tempStore['WAddress'] = WAddress.strip()
         tempStore['dateAdded'] = MoreDetails[0].get_text().strip()
         tempStore['typeOfScam'] = MoreDetails[1].get_text().strip()
         tempStore['scammerAddress'] = MoreDetails[2].get_text().strip()
@@ -91,6 +91,5 @@ for n in range(1, int(LastItemValue)+1):
     GLobalList = GLobalList + Extractor(n)
 
 import json
-with open('data11.json', 'w') as outfile:
+with open('data.json', 'w') as outfile:
     json.dump(GLobalList, outfile)
-

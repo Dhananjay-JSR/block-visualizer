@@ -38,4 +38,23 @@ export type InsertTransaction = typeof TransactionQueries.$inferInsert // insert
 
 
 
+export const ReportsQuerries = sqliteTable('ScamReports',{
+    id: integer('id').primaryKey({
+        autoIncrement: true
+    }),
+    WAddress: text('waddress'),
+    DateAdded: text('dateAdded'),
+    ScamType: text('scamType'),
+    Country : text('country'),
+    Description: text('description'),
+    Source: text('source'),
+    SiteUrl: text('siteUrl'),
+})
+
+export type ReportType = typeof ReportsQuerries.$inferSelect // return type when queried
+export type InsertReportType = typeof ReportsQuerries.$inferInsert // insert type
+
+
+
+
 
