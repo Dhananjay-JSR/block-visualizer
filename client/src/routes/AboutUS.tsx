@@ -11,11 +11,7 @@ export default function AboutUSPage() {
             About <span className="text-blue-600 ">Snowden</span>
           </div>
           <div className="prose text-lg mt-4 max-w-none tablet:prose-xl prose-p:my-2 prose-p:text-lg prose-li:text-lg prose-ul:list-disc prose-li:marker:text-black prose-a:text-primary prose-a:no-underline">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Architecto
-            ducimus rerum eaque possimus nulla deserunt animi atque asperiores
-            veniam est ipsam ab, rem maiores! Impedit quas nobis totam iure
-            earum!
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Alias distinctio ipsa dolores. Aliquam earum totam fugit veritatis unde, recusandae illum excepturi, accusantium autem enim sed pariatur maxime, sapiente mollitia at.
+           We are Team Snow from Graphic Era , 3rd Yr Students of Graphic Era Dehradhun , 2023 SIH Finalist 
           </div>
           <div className="max-w-xl mt-7 mx-auto  text-2xl font-semibold  tracking-tight leading-tight">
             Meet Our  <span className="text-blue-600 ">Amazing Team</span>

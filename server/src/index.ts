@@ -183,14 +183,14 @@ app.get("/address/tx", async (req, res) => {
         res.status(500).send("Internal Server Error");
         return;
       } else if (InstertResponse.changes == 1) {
-        res.status(201).send(MashedData.slice(0,5));
+        res.status(201).send(MashedData);
         return;
       }
     } else {
       // Cache Exists
       let Data = result[0].json_data;
       // @ts-ignore
-      res.status(200).json(Data.slice(0,5));
+      res.status(200).json(Data);
       return;
     }
   } else if (CoinChain == "ETH") {
@@ -205,7 +205,7 @@ app.get("/address/tx", async (req, res) => {
       // console.log("DHANAAYA")
       let Data = await GetETHTrasactions(AddressID);
       // console.log("ComignReq",AddressID)
-      console.log(Data.data)
+      // console.log(Data.data)
       let NewData = Data.data.accountTransactions.map((data: any) => {
         // if (parseInt(data.from,16)==parseInt(AddressID,16)){
         //   console.log("They are Equal")
@@ -227,13 +227,13 @@ app.get("/address/tx", async (req, res) => {
         res.status(500).send("Internal Server Error");
         return;
       } else if (InstertResponse.changes == 1) {
-        res.status(201).send(NewData.slice(0,5));
+        res.status(201).send(NewData);
         return;
       }
     } else {
       let Data = result[0].json_data;
       // @ts-ignore
-      res.status(200).json(Data.slice(0,5));
+      res.status(200).json(Data);
       return;
     }
   }
@@ -370,13 +370,13 @@ app.get("/transaction/addr", async (req, res) => {
       .where(eq(TransactionQueries.transaction_id, TransactionID));
       let isIncomingALreadyAvaialble = req.query.incoming as string;
 
-    if (true) {
+    if (result.length == 0) {
       
       let Data = await GETEthParticipationgAdd(TransactionID);
       let TransmittedData 
 
       if (isIncomingALreadyAvaialble=="true"){
-        console.log("THis shold execute")
+        // console.log("THis shold execute")
 
         TransmittedData = [{
           address: Data.data.from,
@@ -457,7 +457,7 @@ app.get("/transaction", async (req, res) => {
     let TransactionDetails;
     // console.log(TransactionDetails)
     const COINTYPE = CoinType.data.chain;
-    console.log(COINTYPE);
+    // console.log(COINTYPE);
     if (COINTYPE == "BTC") {
       TransactionDetails = await GETbtcTransactions(TransactionID);
       // Should Only Get Data if it's BTC
@@ -540,8 +540,10 @@ app.get("/search", async (req, res) => {
     res.status(400).send("Bad Request");
     return;
   }
-
   // First We Check DB for Cache
+  try{
+
+
   const SearchHistoryRes = await db
     .select()
     .from(SearchHistory)
@@ -550,6 +552,12 @@ app.get("/search", async (req, res) => {
   if (SearchHistoryRes.length == 0) {
     // ^ DB is empty , Fill the Data
     const SearchQueryResult = (await SearchQuerryReq(SearchIDParams)).data;
+    if (SearchQueryResult.message=="No Data Found"){
+      return res.status(404).json({
+        message: "No Data Found",
+        error: true,
+      });
+    }
     const SearchQuerryResult =
       (await SearchQuerryReq(SearchIDParams)).data.length != 0
         ? (await SearchQuerryReq(SearchIDParams)).data[0]
@@ -648,6 +656,13 @@ app.get("/search", async (req, res) => {
       return;
     }
   }
+}
+catch (e){
+  return res.status(404).json({
+    message: "No Data Found",
+    error: true,
+  })
+}
 });
 
 const LiveReportsStream = new Stream()
